@@ -1,16 +1,16 @@
 import { useState } from "react";
 
-export default function NavigationBar({ movies }) {
+export function NavigationBar({ children }) {
   return (
     <nav className="nav-bar">
       <Logo />
       <SearchBar />
-      <FoundResult movies={movies} />
+      {children}
     </nav>
   );
 }
 
-function Logo() {
+export function Logo() {
   return (
     <div className="logo">
       <span role="img">🍿</span>
@@ -19,7 +19,7 @@ function Logo() {
   );
 }
 
-function SearchBar() {
+export function SearchBar() {
   const [query, setQuery] = useState("");
   return (
     <input
@@ -32,7 +32,7 @@ function SearchBar() {
   );
 }
 
-function FoundResult({ movies }) {
+export function FoundResult({ movies }) {
   return (
     <p className="num-results">
       Found <strong>{movies.length}</strong> results
