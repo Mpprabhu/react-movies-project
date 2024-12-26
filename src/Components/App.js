@@ -4,6 +4,7 @@ import Main from "./Main";
 import Box from "./Box";
 import MovieList from "./MoviesList";
 import { WatchedMovieList, WatchedSummary } from "./WatchedMovies";
+import StarRating from "./StarRating";
 
 const tempMovieData = [
   {
@@ -70,6 +71,7 @@ export default function App() {
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMovieList watched={watched} />
+          <StarRating maxRating={10} />
         </Box>
       </Main>
     </>
