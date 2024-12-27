@@ -71,7 +71,12 @@ export default function App() {
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMovieList watched={watched} />
-          <StarRating maxRating={10} />
+          {/* <StarRating
+            maxRating={5}
+            messages={["😑", "😐", "🙂", "😎", "😍"]}
+            size={32}
+            className="test"
+          /> */}
         </Box>
       </Main>
     </>
