@@ -34,7 +34,6 @@ export function WatchedMovieList({ watched }) {
   return (
     <ul className="list">
       {watched.map((movie) => (
-        // <Movie movie={movie} />
         <WatchedMovie movie={movie} key={movie.imdbID} />
       ))}
     </ul>
