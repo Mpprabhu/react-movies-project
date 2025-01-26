@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigationBar, FoundResult } from "./NavigationBar";
 import Main from "./Main";
 import Box from "./Box";
 import MovieList from "./MoviesList";
 import { WatchedMovieList, WatchedSummary } from "./WatchedMovies";
+import { KEY } from "./config";
+import Loader from "./Loader";
 
 const tempMovieData = [
   {
@@ -51,10 +53,26 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
+const query = "interstellar";
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // To handle side-effects without infinite request
+  useEffect(function () {
+    async function fetchMovies() {
+      setIsLoading(true);
+      const response = await fetch(
+        `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+      );
+      const data = await response.json();
+      setMovies(data.Search);
+      setIsLoading(false);
+    }
+    fetchMovies();
+  }, []);
 
   return (
     <>
@@ -63,9 +81,7 @@ export default function App() {
       </NavigationBar>
 
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
 
         <Box>
           <WatchedSummary watched={watched} />
