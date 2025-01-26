@@ -1,4 +1,4 @@
-export default function MovieList({ movies }) {
+export function MovieList({ movies }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (
@@ -20,5 +20,19 @@ export function Movie({ movie }) {
         </p>
       </div>
     </li>
+  );
+}
+
+// OTHER MESSAGES
+
+export function Loader() {
+  return <p className="loader">Loading...</p>;
+}
+
+export function ErrorMessage({ message }) {
+  return (
+    <p className="error">
+      <span>⚠️</span> {message}
+    </p>
   );
 }

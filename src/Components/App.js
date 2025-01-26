@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { NavigationBar, FoundResult } from "./NavigationBar";
 import Main from "./Main";
 import Box from "./Box";
-import MovieList from "./MoviesList";
+import { MovieList, Loader, ErrorMessage } from "./MoviesList";
 import { WatchedMovieList, WatchedSummary } from "./WatchedMovies";
 import { KEY } from "./config";
-import Loader from "./Loader";
 
 const tempMovieData = [
   {
@@ -59,18 +58,34 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // To handle side-effects without infinite request
-  useEffect(function () {
-    async function fetchMovies() {
+
+  async function fetchMovies() {
+    try {
       setIsLoading(true);
+      // RESPONSE
       const response = await fetch(
         `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
       );
+
+      if (!response.ok) throw new Error("Something Went Wrong :(");
+
+      // DATA
       const data = await response.json();
+
+      if (data.Response === "False") throw new Error("Movie Not Found!!");
+
       setMovies(data.Search);
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setIsLoading(false);
     }
+  }
+
+  useEffect(function () {
     fetchMovies();
   }, []);
 
@@ -81,7 +96,12 @@ export default function App() {
       </NavigationBar>
 
       <Main>
-        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />}</Box>
+        <Box>
+          {/* {isLoading ? <Loader /> : <MovieList movies={movies} />} */}
+          {isLoading && <Loader />}
+          {error && <ErrorMessage message={error} />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+        </Box>
 
         <Box>
           <WatchedSummary watched={watched} />
