@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { NavigationBar, FoundResult } from "./NavigationBar";
+import { NavigationBar, FoundResult, SearchBar } from "./NavigationBar";
 import Main from "./Main";
 import Box from "./Box";
+import MovieDetails from "./MovieDetails";
 import { MovieList, Loader, ErrorMessage } from "./MoviesList";
 import { WatchedMovieList, WatchedSummary } from "./WatchedMovies";
 import { KEY } from "./config";
@@ -52,46 +53,68 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-const query = "interstellar";
+const tempQuery = "tenet";
 
 export default function App() {
+  const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
 
-  // To handle side-effects without infinite request
-
-  async function fetchMovies() {
-    try {
-      setIsLoading(true);
-      // RESPONSE
-      const response = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
-      );
-
-      if (!response.ok) throw new Error("Something Went Wrong :(");
-
-      // DATA
-      const data = await response.json();
-
-      if (data.Response === "False") throw new Error("Movie Not Found!!");
-
-      setMovies(data.Search);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
+  // HANDLER FUNCTIONS----------------------------------------------
+  function handleSelectedMovie(id) {
+    setSelectedId((selectedId) => (selectedId === id ? null : id));
   }
 
-  useEffect(function () {
-    fetchMovies();
-  }, []);
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
+
+  // To handle side-effects without infinite request
+  useEffect(
+    function () {
+      async function fetchMovies() {
+        try {
+          setIsLoading(true);
+          setError("");
+          // RESPONSE
+          const response = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          );
+
+          if (!response.ok) throw new Error("Something Went Wrong :(");
+
+          // DATA
+          const data = await response.json();
+
+          if (data.Response === "False") throw new Error("Movie Not Found!!");
+
+          setMovies(data.Search);
+          console.log(data.Search);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+
+      if (query.length < 3) {
+        setMovies([]);
+        setError("");
+        return;
+      }
+
+      fetchMovies();
+    },
+    [query]
+  );
 
   return (
     <>
       <NavigationBar>
+        <SearchBar query={query} setQuery={setQuery} />
         <FoundResult movies={movies} />
       </NavigationBar>
 
@@ -100,12 +123,23 @@ export default function App() {
           {/* {isLoading ? <Loader /> : <MovieList movies={movies} />} */}
           {isLoading && <Loader />}
           {error && <ErrorMessage message={error} />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList movies={movies} onSelectMovie={handleSelectedMovie} />
+          )}
         </Box>
 
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
+          {selectedId ? (
+            <MovieDetails
+              selectedId={selectedId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMovieList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
