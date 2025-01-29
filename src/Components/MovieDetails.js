@@ -46,6 +46,23 @@ export default function MovieDetails({
     onCloseMovie();
   }
 
+  // KEYPRESS EVENTS
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+        }
+      }
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
   useEffect(
     function () {
       async function getMovieDetails() {
@@ -60,6 +77,16 @@ export default function MovieDetails({
       getMovieDetails();
     },
     [selectedId]
+  );
+
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `MOVIE | ${title}`;
+
+      return () => (document.title = `Popcorn Time`);
+    },
+    [title]
   );
 
   return (

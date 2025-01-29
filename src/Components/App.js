@@ -53,7 +53,6 @@ const tempWatchedData = [
     userRating: 9,
   },
 ];
-const tempQuery = "tenet";
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -83,13 +82,16 @@ export default function App() {
   // To handle side-effects without infinite request
   useEffect(
     function () {
+      // FOR RACE CONDITION
+      const controller = new AbortController();
       async function fetchMovies() {
         try {
           setIsLoading(true);
           setError("");
           // RESPONSE
           const response = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+            { signal: controller.signal }
           );
 
           if (!response.ok) throw new Error("Something Went Wrong :(");
@@ -100,9 +102,13 @@ export default function App() {
           if (data.Response === "False") throw new Error("Movie Not Found!!");
 
           setMovies(data.Search);
-          console.log(data.Search);
+          setError("");
+
+          return function () {
+            controller.abort();
+          };
         } catch (err) {
-          setError(err.message);
+          if (err.name !== "AbortError") setError(err.message);
         } finally {
           setIsLoading(false);
         }
@@ -114,6 +120,7 @@ export default function App() {
         return;
       }
 
+      handleCloseMovie();
       fetchMovies();
     },
     [query]
