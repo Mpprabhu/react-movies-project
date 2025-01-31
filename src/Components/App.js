@@ -57,10 +57,16 @@ const tempWatchedData = [
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
+  // const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+
+  // const [watched, setWatched] = useState([]);
+  const [watched, setWatched] = useState(function () {
+    const storedMovies = localStorage.getItem("watched");
+    return JSON.parse(storedMovies);
+  });
 
   // HANDLER FUNCTIONS----------------------------------------------
   function handleSelectedMovie(id) {
@@ -73,6 +79,9 @@ export default function App() {
 
   function handleAddWatchedMovie(movie) {
     setWatched((watched) => [...watched, movie]);
+
+    // LOCAL STORAGE -> EVENT HANDLER
+    // localStorage.setItem("watched", JSON.stringify([...watched, movie]));
   }
 
   function handleDeleteWatchedMovie(id) {
@@ -80,6 +89,16 @@ export default function App() {
   }
 
   // To handle side-effects without infinite request
+  // EFFECTS.....................................
+
+  // Advantage for both adding and deleting
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
+
   useEffect(
     function () {
       // FOR RACE CONDITION
