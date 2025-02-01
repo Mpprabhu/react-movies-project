@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { KEY } from "./config";
+import { KEY, URL } from "../config";
 import StarRating from "./StarRating";
 import { Loader } from "./MoviesList";
+import { useKey } from "../Hooks/useKey";
 
 export default function MovieDetails({
   selectedId,
@@ -47,29 +48,13 @@ export default function MovieDetails({
   }
 
   // KEYPRESS EVENTS
-  useEffect(
-    function () {
-      function callback(e) {
-        if (e.code === "Escape") {
-          onCloseMovie();
-        }
-      }
-      document.addEventListener("keydown", callback);
-
-      return function () {
-        document.removeEventListener("keydown", callback);
-      };
-    },
-    [onCloseMovie]
-  );
+  useKey("Escape", onCloseMovie);
 
   useEffect(
     function () {
       async function getMovieDetails() {
         setIsLoading(true);
-        const response = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
-        );
+        const response = await fetch(`${URL}apikey=${KEY}&i=${selectedId}`);
         const data = await response.json();
         setMovie(data);
         setIsLoading(false);
