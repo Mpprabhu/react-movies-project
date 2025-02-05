@@ -23,6 +23,7 @@ FONT SIZE SYSTEM (px)
   padding: 0;
   box-sizing: border-box;
   scrollbar-width: none;
+  font-family: "Nunito Sans", serif;
 }
 
 html {
@@ -99,7 +100,7 @@ body {
 
 .logo h1 {
   font-size: 2.6rem;
-  font-family: "Space Grotesk", serif;
+  font-family: "Itim", serif;
   font-weight: 600;
   color: #fff;
 }
