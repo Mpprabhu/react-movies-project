@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { useKey } from "../Hooks/useKey";
+import logo from "./logo.png";
 
 export function NavigationBar({ children }) {
   return (
@@ -13,7 +14,8 @@ export function NavigationBar({ children }) {
 export function Logo() {
   return (
     <div className="logo">
-      <span role="img">🍿</span>
+      {/* <span role="img">🍿</span> */}
+      <img src={logo} alt="logo" className="logo-img" />
       <h1>Popcorn Time </h1>
     </div>
   );
