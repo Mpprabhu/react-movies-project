@@ -7,7 +7,8 @@ import {
 import Main from "../Components/Main";
 import Box from "../Components/Box";
 import MovieDetails from "../Components/MovieDetails";
-import { MovieList, Loader, ErrorMessage } from "../Components/MoviesList";
+import { MovieList, ErrorMessage } from "../Components/MoviesList";
+import Loader from "../Components/Loader";
 import { WatchedMovieList, WatchedSummary } from "../Components/WatchedMovies";
 import { useMovie } from "../Hooks/useMovie";
 import { useLocalStorageState } from "../Hooks/useLocalStorageState";
