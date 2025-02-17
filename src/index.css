@@ -69,11 +69,40 @@ body {
 }
 
 .loader {
-  text-align: center;
-  text-transform: uppercase;
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 4.8rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.4s;
+}
+
+.outer-circle {
+  height: 4rem;
+  width: 4rem;
+  border-radius: 50%;
+  border-top: 3px solid var(--color-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  animation: spin 1s linear infinite;
+}
+
+.inner-circle {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 50%;
+  border-bottom: 2px solid var(--color-text);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {

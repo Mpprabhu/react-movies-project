@@ -26,7 +26,13 @@ export function Movie({ movie, onSelectMovie }) {
 // OTHER MESSAGES
 
 export function Loader() {
-  return <p className="loader">Loading...</p>;
+  return (
+    <div className="loader">
+      <div className="outer-circle">
+        <div className="inner-circle"></div>
+      </div>
+    </div>
+  );
 }
 
 export function ErrorMessage({ message }) {
